@@ -17,6 +17,7 @@ class CupertinoSettingsItem extends StatefulWidget {
     @required this.type,
     @required this.label,
     this.subtitle,
+    this.description,
     this.leading,
     this.trailing,
     this.value,
@@ -30,6 +31,7 @@ class CupertinoSettingsItem extends StatefulWidget {
 
   final String label;
   final String subtitle;
+  final String description;
   final Widget leading;
   final Widget trailing;
   final SettingsItemType type;
@@ -52,8 +54,7 @@ class CupertinoSettingsItemState extends State<CupertinoSettingsItem> {
     final ThemeData theme = Theme.of(context);
     final ListTileTheme tileTheme = ListTileTheme.of(context);
     IconThemeData iconThemeData;
-    if (widget.leading != null)
-      iconThemeData = IconThemeData(color: _iconColor(theme, tileTheme));
+    if (widget.leading != null) iconThemeData = IconThemeData(color: _iconColor(theme, tileTheme));
 
     Widget leadingIcon;
     if (widget.leading != null) {
@@ -121,16 +122,17 @@ class CupertinoSettingsItemState extends State<CupertinoSettingsItem> {
         rowChildren.add(
           Padding(
             padding: const EdgeInsets.only(right: 11.0),
-            child: CupertinoSwitch(
-              value: widget.switchValue,
-              activeColor: widget.enabled
-                  ? Theme.of(context).accentColor
-                  : CupertinoColors.inactiveGray,
-              onChanged: !widget.enabled
-                  ? null
-                  : (bool value) {
-                      widget.onToggle(value);
-                    },
+            child: Transform.scale(
+              scale: 0.8,
+              child: CupertinoSwitch(
+                value: widget.switchValue,
+                activeColor: widget.enabled ? Theme.of(context).accentColor : CupertinoColors.inactiveGray,
+                onChanged: !widget.enabled
+                    ? null
+                    : (bool value) {
+                        widget.onToggle(value);
+                      },
+              ),
             ),
           ),
         );
@@ -146,8 +148,7 @@ class CupertinoSettingsItemState extends State<CupertinoSettingsItem> {
               ),
               child: Text(
                 widget.value,
-                style: TextStyle(
-                    color: CupertinoColors.inactiveGray, fontSize: 16),
+                style: TextStyle(color: CupertinoColors.inactiveGray, fontSize: 16),
               ),
             ),
           );
@@ -221,9 +222,18 @@ class CupertinoSettingsItemState extends State<CupertinoSettingsItem> {
       },
       child: Container(
         color: calculateBackgroundColor(context),
-        height: widget.subtitle == null ? 44.0 : 57.0,
-        child: Row(
-          children: rowChildren,
+        // height: widget.subtitle == null ? 44.0 : 57.0,
+        child: Column(
+          children: [
+            Row(
+              children: rowChildren,
+            ),
+            if (widget.description != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(15, 8, 15, 12),
+                child: Text(widget.description, style: TextStyle(fontSize: 12)),
+              ),
+          ],
         ),
       ),
     );
